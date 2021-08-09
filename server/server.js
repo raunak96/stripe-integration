@@ -1,12 +1,22 @@
 import express, { json } from "express";
 import { config } from "dotenv";
 import Stripe from "stripe";
+import cors from "cors";
 
 config();
 
 const app = express();
 app.use(json());
-app.use(express.static("public"));
+
+/* When client was in same url as server, it was in public folder inside server folder */
+// app.use(express.static("public"));
+
+/* Since client and server now in different origin, we use cors */
+app.use(
+	cors({
+		origin: process.env.CLIENT_ORIGIN,
+	})
+);
 
 const stripe = Stripe(process.env.STRIPE_PRIVATE_KEY);
 
@@ -33,8 +43,8 @@ app.post("/create-checkout-session", async (req, res) => {
 					quantity: item.quantity,
 				};
 			}),
-			success_url: `${process.env.SERVER_URL}/success.html`,
-			cancel_url: `${process.env.SERVER_URL}/cancel.html`,
+			success_url: `${process.env.CLIENT_URL}/success.html`,
+			cancel_url: `${process.env.CLIENT_URL}/cancel.html`,
 		});
 		res.json({ url: session.url });
 	} catch (error) {

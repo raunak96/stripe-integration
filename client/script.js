@@ -7,13 +7,16 @@ const buyOrder = [
 
 button.addEventListener("click", async () => {
 	try {
-		const res = await fetch("/create-checkout-session", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				items: buyOrder,
-			}),
-		});
+		const res = await fetch(
+			"http://localhost:3000/create-checkout-session",
+			{
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					items: buyOrder,
+				}),
+			}
+		);
 		if (!res.ok) {
 			throw new Error(
 				`A ${res.status} error has occurred: ${res.statusText}`
